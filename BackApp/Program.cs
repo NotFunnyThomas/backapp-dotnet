@@ -1,4 +1,6 @@
 
+using BackApp.Model.Repository;
+
 namespace BackApp
 {
     public class Program
@@ -8,6 +10,7 @@ namespace BackApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSingleton<CarRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,5 @@
 ﻿using BackApp.Model;
+using BackApp.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Net;
@@ -9,6 +10,30 @@ namespace BackApp.Controllers
     [Route("[controller]")]
     public class EchoController : Controller
     {
+        CarRepository _carRepository;
+
+        public EchoController()
+        {
+            _carRepository = new CarRepository();
+        }
+
+        [HttpPost]
+        [Route("ExecDapper")]
+        public IActionResult ExecWriteDapper([FromBody] Car car)
+        {
+            String result = _carRepository.Execute(car);
+            return StatusCode(StatusCodes.Status200OK, result);
+        }
+
+
+
+        [HttpGet]
+        [Route("ExecDapper")]
+        public IActionResult ExecDapper()
+        {
+            String version = _carRepository.Execute();
+            return StatusCode(StatusCodes.Status200OK, version);
+        }
 
         [HttpGet]
         [Route("QueryExtension")]
