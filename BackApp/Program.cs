@@ -1,5 +1,6 @@
 
 using BackApp.Model.Repository;
+using Domain.Mom;
 
 namespace BackApp
 {
@@ -11,6 +12,8 @@ namespace BackApp
 
             // Add services to the container.
             builder.Services.AddSingleton<CarRepository>();
+            builder.Services.AddSingleton<MessageRepository>();
+            builder.Services.AddSingleton<MomListener>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,6 +21,11 @@ namespace BackApp
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+
+            MomListener listener = (MomListener) app.Services.GetRequiredService<MomListener>();
+            listener.Initialize();
+            listener.Run();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

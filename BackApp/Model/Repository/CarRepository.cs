@@ -11,29 +11,22 @@ namespace BackApp.Model.Repository
         public string Execute(Car newInstance)
         {
             string cs = @"User ID=postgres;Password=postgres;Host=192.168.5.16;Port=5432;Database=postgres";
-
-            using var con = new NpgsqlConnection(cs);
-            con.Open();
-
-            //var ver = con.ExecuteScalar<string>("SELECT version()");
-
-            var query = "INSERT INTO cars(name, price) VALUES(@name,@price)";
-            var dp = new DynamicParameters();
-            dp.Add("@name", newInstance.Name, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 255);
-            dp.Add("@price", newInstance.Price);
-
-            int res = con.Execute(query, dp);
-            con.Close();
-
-            if (res > 0) {
-                return "OK";
-            }
-            else
+            using (var con = new NpgsqlConnection(cs))
             {
-                return "KO";
-            }
-          
+                con.Open();
+                var query = "INSERT INTO cars(name, price) VALUES(@name,@price)";
+                var dp = new DynamicParameters();
+                dp.Add("@name", newInstance.Name, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 255);
+                dp.Add("@price", newInstance.Price);
 
+                int res = con.Execute(query, dp);
+                if (res > 0)
+                {
+                    return "OK";
+                }
+
+            }
+            return "KO";
         }
         public string Execute()
         {
