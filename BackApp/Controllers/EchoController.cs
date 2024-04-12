@@ -1,6 +1,8 @@
-﻿using BackApp.Model;
+﻿using Apache.NMS.ActiveMQ.Commands;
+using BackApp.Model;
 using BackApp.Model.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Globalization;
 using System.Net;
 
@@ -12,9 +14,12 @@ namespace BackApp.Controllers
     {
         CarRepository _carRepository;
 
-        public EchoController()
+        ILogger<EchoController> _log;
+
+        public EchoController(CarRepository carRepo, ILogger<EchoController> logController)
         {
-            _carRepository = new CarRepository();
+            _carRepository = carRepo;
+            _log = logController;
         }
 
         [HttpPost]
@@ -54,6 +59,8 @@ namespace BackApp.Controllers
         [Route("Query")]
         public IActionResult Index([FromQuery(Name = "message")] string messageinput)
         {
+            _log.LogInformation($"message {messageinput}");
+
             Object obj = new
             {
                 message = $"echo de {messageinput}"
