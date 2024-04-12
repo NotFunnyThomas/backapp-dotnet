@@ -1,6 +1,7 @@
 
 using BackApp.Model.Repository;
 using Domain.Mom;
+using Serilog;
 
 namespace BackApp
 {
@@ -8,9 +9,20 @@ namespace BackApp
     {
         public static void Main(string[] args)
         {
+            //Log.Logger = new LoggerConfiguration()
+            //.WriteTo.Console()
+            //.WriteTo.File("logs-backApp.log")
+            //.CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
 
+            //Add support to logging with SERILOG
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
+
+
             // Add services to the container.
+            //builder.Services.AddSerilog(); 
             builder.Services.AddSingleton<CarRepository>();
             builder.Services.AddSingleton<MessageRepository>();
             builder.Services.AddSingleton<MomListener>();
@@ -21,7 +33,7 @@ namespace BackApp
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
-
+            app.UseSerilogRequestLogging();
 
             MomListener listener = (MomListener) app.Services.GetRequiredService<MomListener>();
             listener.Initialize();
@@ -36,6 +48,7 @@ namespace BackApp
 
             app.UseAuthorization();
 
+            
 
             app.MapControllers();
 
